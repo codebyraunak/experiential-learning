@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: campusfix-db
+    restart: always
+    environment:
+      POSTGRES_USER: campusfix
+      POSTGRES_PASSWORD: campusfix123
+      POSTGRES_DB: campusfix
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
