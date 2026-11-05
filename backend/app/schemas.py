@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 
@@ -11,6 +11,8 @@ class ComplaintCreate(BaseModel):
 
 
 class ComplaintResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     title: str
     description: str
@@ -21,8 +23,6 @@ class ComplaintResponse(BaseModel):
     created_at: datetime
     student_id: int | None = None
 
-    class Config:
-        from_attributes = True
 
 class StudentRegister(BaseModel):
     name: str
@@ -30,6 +30,8 @@ class StudentRegister(BaseModel):
     department: str
     year: int
     password: str
+    semester: int | None = None
+    section: str | None = None
 
 
 class StudentLogin(BaseModel):
@@ -38,11 +40,12 @@ class StudentLogin(BaseModel):
 
 
 class StudentResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     name: str
     usn: str
     department: str
     year: int
-
-    class Config:
-        from_attributes = True
+    semester: int | None = None
+    section: str | None = None

@@ -13,6 +13,8 @@ class Student(Base):
     usn = Column(String(20), unique=True, index=True, nullable=False)
     department = Column(String(50))
     year = Column(Integer)
+    semester = Column(Integer, nullable=True)
+    section = Column(String(10), nullable=True)
     password_hash = Column(String(255), nullable=True)
 
     complaints = relationship("Complaint", back_populates="student")
@@ -32,6 +34,7 @@ class Complaint(Base):
     staff_id = Column(Integer, ForeignKey("staff.id"), nullable=True)
     student_id = Column(Integer, ForeignKey("students.id"), nullable=True)
     student = relationship("Student", back_populates="complaints")
+
 
 class Staff(Base):
     __tablename__ = "staff"
