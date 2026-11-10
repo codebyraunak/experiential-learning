@@ -3,7 +3,6 @@ import logging
 import os
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 
 from fastapi import (
     Depends,
@@ -15,7 +14,7 @@ from fastapi import (
     UploadFile,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import Response
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -24,6 +23,7 @@ from app import models, schemas
 from app.admin import router as admin_router
 from app.ai import categorize_complaint
 from app.auth import hash_password, verify_password
+from app.cors import allowed_origins
 from app.database import SessionLocal, get_db
 from app.notifications import add_notification
 from app.security import (
@@ -33,7 +33,7 @@ from app.security import (
     verify_admin_credentials,
 )
 from app.sla import SLA_HOURS, deadline_for, run_sla_cycle
-from app.uploads import UPLOAD_DIR, delete_image, read_image, save_image
+from app.uploads import delete_image, get_image, read_image, save_image
 
 logger = logging.getLogger(__name__)
 SLA_SCAN_INTERVAL_SECONDS = 15 * 60
@@ -77,12 +77,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:4173",
-        "http://127.0.0.1:4173",
-    ],
+    allow_origins=allowed_origins(),
     allow_methods=["GET", "POST", "PATCH", "PUT", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
 )
@@ -514,9 +509,6 @@ def get_complaint_photo(
     db: Session = Depends(get_db),
     principal: Principal = Depends(require_roles("student", "staff", "admin")),
 ):
-    path = (UPLOAD_DIR / filename).resolve()
-    if path.parent != UPLOAD_DIR or not path.is_file():
-        raise HTTPException(status_code=404, detail="Photo not found")
     query = db.query(models.Complaint).filter(
         (models.Complaint.before_photo_path == filename)
         | (models.Complaint.after_photo_path == filename)
@@ -527,7 +519,11 @@ def get_complaint_photo(
         query = query.filter(models.Complaint.staff_id == principal.user_id)
     if query.first() is None:
         raise HTTPException(status_code=404, detail="Photo not found")
-    return FileResponse(path)
+    image = get_image(filename)
+    if image is None:
+        raise HTTPException(status_code=404, detail="Photo not found")
+    contents, mime_type = image
+    return Response(content=contents, media_type=mime_type)
 
 
 @app.get("/locations")

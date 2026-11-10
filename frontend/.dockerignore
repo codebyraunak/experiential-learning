@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env*
+*.pdf
+**/*.pdf
+*.[pP][dD][fF]
+**/*.[pP][dD][fF]
+student_credentials.csv
+**/student_credentials.*
+**/*student*credentials*

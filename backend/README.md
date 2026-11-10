@@ -21,6 +21,19 @@ Smart Campus Maintenance and Infrastructure Management System.
 
 API Documentation: http://127.0.0.1:8000/docs
 
+## Containerized deployment
+From the repository root, Compose builds the FastAPI backend and the production
+Vite frontend, and starts them alongside PostgreSQL. The frontend is available
+at `http://localhost:5173`, the API at `http://localhost:8000`, and PostgreSQL
+at `localhost:5432`.
+
+The root `.env` supplies the existing PostgreSQL password. The backend's
+private `backend/.env` is passed to the container at runtime for application
+settings but is excluded from the image. Compose overrides its local
+`DATABASE_URL` with the internal `db:5432` address. PostgreSQL continues using
+the existing `postgres_data` volume; do not remove that volume when managing
+the stack.
+
 ## Import Admission Records
 From the `backend/` directory, validate the PDF without writing to the database:
 
@@ -44,7 +57,19 @@ unset because they are not established by the admission PDF.
   fallback. Complaint text and an optional image are sent to Gemini when
   categorization is requested.
 - Photo uploads are stored under `UPLOAD_DIR` (default: `backend/uploads/`).
-  Keep this directory on persistent storage and out of version control.
+  Keep this directory on persistent storage and out of version control for
+  local development. When `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are
+  configured, complaint photos use the private Supabase bucket configured by
+  `SUPABASE_STORAGE_BUCKET` (default: `campusfix-complaint-photos`). Create that
+  bucket as private in Supabase before deploying. If only one of the URL and
+  service-role key is configured, storage operations fail instead of silently
+  switching to local files. Render deployments also fail closed when Supabase
+  Storage credentials are missing. Existing local photo files are not copied
+  automatically; preserve their filenames when transferring any needed files
+  to the bucket before enabling Supabase Storage.
+- Set `CORS_ORIGINS` to a comma-separated list of exact frontend origins, such
+  as `https://campusfix.vercel.app,https://campusfix-git-feature.vercel.app`.
+  The localhost development origins remain allowed.
 - SLA targets are defined in `app/sla.py`. Background processing checks every
   15 minutes, escalates at the SLA deadline, then at 24 and 72 hours overdue,
   and auto-closes resolved complaints after 48 hours without student feedback.
@@ -71,3 +96,16 @@ unset because they are not established by the admission PDF.
 Admin complaint and staff management endpoints now require an admin bearer
 token; staff task endpoints require the assigned staff member's token, and
 student complaint endpoints require the complaint owner's token.
+
+### Render environment variables
+Configure these values in the Render backend service. Keep service-role and
+Gemini keys on the backend only; never use `VITE_` prefixes for secrets.
+- `DATABASE_URL` — PostgreSQL connection URL.
+- `JWT_SECRET_KEY` — strong, private JWT signing secret.
+- `ADMIN_USERNAME` and `ADMIN_PASSWORD` — initial admin login.
+- `CORS_ORIGINS` — comma-separated exact Vercel frontend origins.
+- `SUPABASE_URL` — Supabase project URL.
+- `SUPABASE_SERVICE_ROLE_KEY` — private Supabase service-role key.
+- `SUPABASE_STORAGE_BUCKET` — private bucket name
+  (`campusfix-complaint-photos`).
+- `GEMINI_API_KEY` — optional backend-only Gemini key.

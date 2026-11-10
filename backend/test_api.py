@@ -15,6 +15,9 @@ def client(monkeypatch):
     monkeypatch.setenv("JWT_SECRET_KEY", "test-only-signing-secret-for-campusfix")
     monkeypatch.setenv("ADMIN_USERNAME", "test-admin")
     monkeypatch.setenv("ADMIN_PASSWORD", "test-admin-password")
+    monkeypatch.delenv("SUPABASE_URL", raising=False)
+    monkeypatch.delenv("SUPABASE_SERVICE_ROLE_KEY", raising=False)
+    monkeypatch.delenv("SUPABASE_STORAGE_BUCKET", raising=False)
     monkeypatch.setattr(
         "app.main.categorize_complaint",
         lambda *args, **kwargs: FALLBACK_SUGGESTION.copy(),
@@ -226,3 +229,42 @@ def test_admin_routes_require_admin_role(client):
     student_headers = _student_headers(client, "TEST001")
     forbidden = client.get("/admin/complaints", headers=student_headers)
     assert forbidden.status_code == 403
+
+
+def test_complaint_photo_access_is_limited_to_owner(client):
+    owner_registration = client.post(
+        "/students/register",
+        json={"usn": "TEST001", "password": "Test@12345"},
+    )
+    owner_id = owner_registration.json()["id"]
+    owner_headers = _student_headers(client, "TEST001")
+    other_registration = client.post(
+        "/students/register",
+        json={"usn": "TEST002", "password": "Test@12345"},
+    )
+    other_headers = _student_headers(client, "TEST002")
+    complaint_response = client.post(
+        f"/complaints/with-photo?student_id={owner_id}",
+        headers=owner_headers,
+        data={
+            "title": "Broken light",
+            "description": "Light is out",
+            "location": "Room 1",
+            "category": "Electrical",
+            "priority": "medium",
+            "suggested_team": "Electrical",
+            "summary": "Light is out",
+        },
+        files={"photo": ("before.png", b"\x89PNG\r\n\x1a\nimage", "image/png")},
+    )
+    assert complaint_response.status_code == 200
+    filename = complaint_response.json()["before_photo_path"]
+
+    owner_photo = client.get(f"/media/{filename}", headers=owner_headers)
+    other_photo = client.get(f"/media/{filename}", headers=other_headers)
+
+    assert owner_photo.status_code == 200
+    assert owner_photo.content == b"\x89PNG\r\n\x1a\nimage"
+    assert owner_photo.headers["content-type"] == "image/png"
+    assert other_photo.status_code == 404
+    assert other_registration.status_code == 200
