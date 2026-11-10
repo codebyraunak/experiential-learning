@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 .env
+backend/uploads/
 .pytest_cache/
 *.xlsx
 student_credentials.csv

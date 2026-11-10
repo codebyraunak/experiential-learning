@@ -1,0 +1,404 @@
+.workspace-shell {
+  min-height: 100vh;
+  color: #1c2d47;
+  background: #f5f7f8;
+}
+
+.workspace-header {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  gap: 28px;
+  padding: 12px clamp(20px, 5vw, 72px);
+  color: #fff;
+  background: #192f51;
+}
+
+.workspace-brand,
+.workspace-nav,
+.workspace-account {
+  display: flex;
+  align-items: center;
+}
+
+.workspace-brand {
+  gap: 10px;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.workspace-nav {
+  flex: 1;
+  gap: 18px;
+}
+
+.workspace-nav a,
+.workspace-account span {
+  color: #d3e2ed;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.workspace-nav a:hover {
+  color: #fff;
+}
+
+.workspace-account {
+  gap: 14px;
+}
+
+.workspace-account button,
+.notification-item button {
+  border: 0;
+  color: #fff;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+
+.workspace-content {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 40px 0 72px;
+}
+
+.workspace-title-row,
+.complaint-card__header,
+.qr-card__body,
+.workspace-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.workspace-title-row {
+  margin-bottom: 24px;
+}
+
+.workspace-title-row h1 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+  letter-spacing: -0.8px;
+}
+
+.workspace-panel,
+.complaint-card {
+  padding: clamp(20px, 3vw, 30px);
+  border: 1px solid #e6eaee;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.workspace-form {
+  display: grid;
+  max-width: 720px;
+  gap: 20px;
+}
+
+.staff-account-form {
+  margin-bottom: 24px;
+}
+
+.staff-account-form h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.workspace-form .form-field {
+  gap: 8px;
+}
+
+.workspace-form .form-field input,
+.workspace-form .form-field select,
+.workspace-form .form-field textarea,
+.admin-complaint-actions .form-field select {
+  height: 44px;
+  border: 1px solid #e6eaee;
+  border-radius: 6px;
+  padding: 0 12px;
+  color: #1c2d47;
+  background: #fff;
+}
+
+.workspace-form .form-field textarea {
+  height: auto;
+  min-height: 110px;
+  padding: 12px;
+}
+
+.workspace-form .form-field input[type='file'] {
+  height: auto;
+  padding: 10px;
+}
+
+.secondary-button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #159b92;
+  border-radius: 6px;
+  color: #11877f;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background: #effaf8;
+}
+
+.suggestion-panel {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 8px;
+  background: #f4fbfa;
+}
+
+.suggestion-panel > p,
+.workspace-empty {
+  margin: 0;
+  color: #708093;
+}
+
+.complaint-list {
+  display: grid;
+  gap: 18px;
+}
+
+.complaint-card h2,
+.qr-card h2,
+.location-form h2 {
+  margin: 3px 0 0;
+  font-size: 19px;
+}
+
+.complaint-card > p {
+  color: #546478;
+  line-height: 1.55;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #8793a1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.complaint-meta,
+.complaint-photos,
+.admin-complaint-actions,
+.task-actions,
+.verification-actions,
+.qr-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.complaint-meta {
+  color: #68778a;
+  font-size: 12px;
+}
+
+.priority,
+.status-badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #485d78;
+  background: #eef2f6;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.priority--high,
+.priority--critical,
+.status-badge--overdue {
+  color: #a42b24;
+  background: #fff0ef;
+}
+
+.complaint-photos {
+  margin-top: 16px;
+}
+
+.complaint-photo {
+  margin: 0;
+}
+
+.complaint-photo img {
+  display: block;
+  width: min(240px, 100%);
+  max-height: 180px;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+.complaint-photo figcaption {
+  margin-top: 5px;
+  color: #8793a1;
+  font-size: 11px;
+}
+
+.resolution-note {
+  padding: 12px;
+  border-left: 3px solid #159b92;
+  background: #f5f7f8;
+}
+
+.verification-actions,
+.task-actions,
+.admin-complaint-actions {
+  margin-top: 18px;
+}
+
+.task-actions {
+  align-items: end;
+}
+
+.task-actions .form-field {
+  flex: 1 1 260px;
+}
+
+.notification-list {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+
+.notification-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 14px;
+  border-radius: 6px;
+  color: #627186;
+  background: #fff;
+  font-size: 12px;
+}
+
+.notification-item--new {
+  border-left: 3px solid #159b92;
+}
+
+.notification-item button {
+  color: #11877f;
+  white-space: nowrap;
+}
+
+.notification-count {
+  color: #11877f;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.workspace-summary {
+  justify-content: start;
+  margin-bottom: 22px;
+}
+
+.workspace-summary > div {
+  display: grid;
+  min-width: 130px;
+  gap: 5px;
+  padding: 16px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.workspace-summary strong {
+  font-size: 22px;
+}
+
+.workspace-summary span {
+  color: #8793a1;
+  font-size: 11px;
+}
+
+.admin-complaint-actions {
+  justify-content: flex-start;
+}
+
+.qr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.location-form h2 {
+  margin-bottom: 4px;
+}
+
+.qr-card__body {
+  align-items: flex-start;
+}
+
+.qr-card__body p:not(.eyebrow) {
+  color: #68778a;
+  font-size: 13px;
+}
+
+.qr-card__body img {
+  width: 116px;
+  height: 116px;
+}
+
+.qr-actions {
+  margin-top: 16px;
+}
+
+@media (max-width: 700px) {
+  .workspace-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .workspace-nav {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .workspace-account {
+    margin-left: auto;
+  }
+
+  .workspace-content {
+    width: min(100% - 28px, 1120px);
+    padding-top: 26px;
+  }
+
+  .workspace-summary {
+    flex-wrap: wrap;
+  }
+}
+
+@media print {
+  .workspace-header,
+  .workspace-title-row,
+  .workspace-form,
+  .qr-actions,
+  .notification-list {
+    display: none !important;
+  }
+
+  .workspace-content {
+    width: 100%;
+    padding: 0;
+  }
+
+  .qr-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .qr-card {
+    break-inside: avoid;
+  }
+}
